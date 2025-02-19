@@ -166,12 +166,12 @@ esac
 
 # export PATH="$HOME/.tmuxifier/bin:$PATH"
 #export PATH=$PATH:/home/jtp00108/go/bin:/home/jtp00108/flutter/bin:/usr/local/nvim/bin
-export PATH=$PATH:/home/jtp00108/go/bin:/home/jtp00108/flutter/bin
-export PATH="$PATH:/opt/nvim-linux64/bin"
+#export PATH=$PATH:/home/jtp00108/go/bin:/home/jtp00108/flutter/bin
+#export PATH="$PATH:/opt/nvim-linux64/bin"
 # export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
-export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig
-export SYSTEM_DEPS_PANGO_NO_PKG_CONFIG="true"
-export SYSTEM_DEPS_PANGO_LIB="pango-1.0"
+#export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig
+#export SYSTEM_DEPS_PANGO_NO_PKG_CONFIG="true"
+#export SYSTEM_DEPS_PANGO_LIB="pango-1.0"
 
 
 # eval "$(tmuxifier init -)"
@@ -181,21 +181,21 @@ export SYSTEM_DEPS_PANGO_LIB="pango-1.0"
 
 
 # add Pulumi to the PATH
-export PATH=$PATH:/home/jtp00108/.pulumi/bin
+#export PATH=$PATH:/home/jtp00108/.pulumi/bin
 
 # export PATH=$PATH:/home/jtp00108/.local/bin/awrit
 
 # pnpm
-export PNPM_HOME="/home/jtp00108/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
+#export PNPM_HOME="/home/jtp00108/.local/share/pnpm"
+#case ":$PATH:" in
+#  *":$PNPM_HOME:"*) ;;
+#  *) export PATH="$PNPM_HOME:$PATH" ;;
+#esac
 
 # pnpm end
-. "$HOME/.cargo/env"
+#. "$HOME/.cargo/env"
 
-export CARGO_TARGET_DIR="$HOME/.cargo/target"
+#export CARGO_TARGET_DIR="$HOME/.cargo/target"
 
 # Starship CLI
 eval "$(starship init zsh)"
@@ -223,3 +223,5 @@ alias gcm='git commit -m'
 export PATH=$HOME/.local/zig:$PATH
 
 alias cari_port="sudo lsof -i -n -P | grep"
+alias ssh-biznet-k8s="ssh -i ~/.ssh/devopsk8s.pem yoseph@103.89.1.170"
+alias ssh-biznet-instance="ssh -i ~/.ssh/yosephbe.pem yoseph@103.150.101.135"
