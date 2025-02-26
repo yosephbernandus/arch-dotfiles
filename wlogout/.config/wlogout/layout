@@ -6,19 +6,32 @@
 }
 {
     "label" : "logout",
-    "action" : "killall -9 Hyprland",
+    "action" : "loginctl kill-session $XDG_SESSION_ID",
     "text" : "Exit",
     "keybind" : "e"
 }
 {
     "label" : "shutdown",
-    "action" : "poweroff",
+    "action" : "systemctl poweroff",
     "text" : "Shutdown",
     "keybind" : "s"
 }
 {
     "label" : "reboot",
-    "action" : "reboot",
+    "action" : "systemctl reboot",
     "text" : "Reboot",
     "keybind" : "r"
 }
+{
+    "label" : "hibernate",
+    "action" : "/usr/local/bin/hibernate-lock",
+    "text" : "Hibernate",
+    "keybind" : "h"
+}
+{
+    "label" : "suspend",
+    "action" : "systemctl suspend",
+    "text" : "Suspend",
+    "keybind" : "u"
+}
+
