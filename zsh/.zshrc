@@ -225,3 +225,5 @@ export PATH=$HOME/.local/zig:$PATH
 alias cari_port="sudo lsof -i -n -P | grep"
 alias ssh-biznet-k8s="ssh -i ~/.ssh/devopsk8s.pem yoseph@103.89.1.170"
 alias ssh-biznet-instance="ssh -i ~/.ssh/yosephbe.pem yoseph@103.150.101.135"
+
+neofetch
