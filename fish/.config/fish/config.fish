@@ -1,6 +1,35 @@
 starship init fish | source
 
+function fish_user_key_bindings
+    # git shorcuts
+    bind \cg 'git status'
+
+    bind \ca beginning-of-line
+    bind \ce end-of-line
+    bind \cp up-or-search
+    bind \cn down-or-search
+
+    # clear the terminal
+    bind \cl "clear; commandline -f repaint"
+
+    # directory navigation
+    bind \ea "cd ..; commandline -f repaint"
+
+    # history search
+    bind \cr history-search-backward
+
+    # word navigation
+    bind \ef forward-word
+    bind \eb backward-word
+
+    # kill whole line
+    bind \ck kill-whole-line
+end
+
+
 if status is-interactive
+    fish_user_key_bindings
+
     # Environment Variables
     set -gx EDITOR nvim
     set -gx VISUAL nvim
@@ -51,3 +80,4 @@ if status is-interactive
     set -gx XDG_CACHE_HOME $HOME/.cache
     set -gx XDG_DATA_HOME $HOME/.local/share
 end
+
