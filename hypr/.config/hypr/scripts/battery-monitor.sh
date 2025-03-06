@@ -102,5 +102,5 @@ while true; do
     fi
     
     echo "Sleeping for 30 seconds" >> "$LOG_FILE"
-    sleep 1
+    sleep 30
 done
