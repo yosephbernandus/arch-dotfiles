@@ -1,0 +1,120 @@
+@import "mocha.css"; 
+
+* {
+    font-family: "MesloLGS Nerd Font Mono Bold";
+    font-size: 12px;
+    min-height: 0;
+    font-weight: bold;
+    margin: 0 2px;  /* Added global margin */
+}
+
+window#waybar {
+    background: @base;
+    color: @text;
+    border-bottom: 1px solid @surface0;
+    padding: 2px 4px;  /* Added padding to the entire bar */
+}
+
+/* Workspaces styling */
+#workspaces button {
+    padding: 0 4px;  /* Increased padding */
+    margin: 0 2px;   /* Added margin between workspace buttons */
+    color: @text;
+}
+
+#workspaces button.active {
+    color: @mauve;
+    border-bottom: 2px solid @mauve;
+}
+
+#workspaces button:hover {
+    background: @surface0;
+    border-bottom: 2px solid @mauve;
+}
+
+/* Module styling with consistent spacing */
+#custom-power,
+#clock,
+#battery,
+#network,
+#pulseaudio,
+#cpu,
+#memory,
+#idle_inhibitor,
+#tray {
+    padding: 0 2px;    /* Consistent padding */
+    margin: 0 4px;     /* Space between modules */
+}
+
+/* Individual module colors */
+#custom-power {
+    color: @red;
+    margin-right: 12px;  /* Extra space for the last item */
+}
+
+#clock {
+    color: @lavender;
+}
+
+#battery {
+    color: @green;
+}
+
+#battery.charging {
+    color: @green;
+}
+
+#battery.warning:not(.charging) {
+    color: @red;
+}
+
+#network {
+    color: @sapphire;
+}
+
+#pulseaudio {
+    color: @blue;
+}
+
+#pulseaudio.muted {
+    color: @red;
+}
+
+#cpu {
+    color: @mauve;
+}
+
+#memory {
+    color: @peach;
+}
+
+#idle_inhibitor {
+    color: @lavender;
+}
+
+#idle_inhibitor.activated {
+    color: @red;
+}
+
+/* System tray styling */
+#tray {
+    margin-right: 4px;
+}
+
+/* Make modules on the right more visible */
+.modules-right * {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0 4px;  /* Space between icon and text within modules */
+}
+
+/* Add separators between modules */
+.modules-right > widget {
+    margin: 0 2px;
+    padding: 0 4px;
+}
+
+.modules-right > widget:last-child {
+    border-right: none;
+}
+
