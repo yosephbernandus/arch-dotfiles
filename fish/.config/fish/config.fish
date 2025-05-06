@@ -81,3 +81,9 @@ if status is-interactive
     set -gx XDG_DATA_HOME $HOME/.local/share
 end
 
+set -x LC_ALL en_US.UTF-8
+set -x LANG en_US.UTF-8
+
+export PATH="/opt/cuda/bin:$PATH"
+export LD_LIBRARY_PATH="/opt/cuda/lib64:$LD_LIBRARY_PATH"
+
