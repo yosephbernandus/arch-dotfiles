@@ -166,3 +166,4 @@ window-save-state = always
 window-height = 30
 window-width = 120
 
+keybind = shift+enter=text:\n
