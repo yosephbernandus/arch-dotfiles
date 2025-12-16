@@ -196,6 +196,14 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Move line up
+vim.keymap.set('n', '<M-k>', ':m .-2<CR>==', { noremap = true, silent = true })
+vim.keymap.set('v', '<M-k>', ":m '<-2<CR>==", { noremap = true, silent = true })
+
+-- Move line down
+vim.keymap.set('n', '<M-j>', ':m .+1<CR>==', { noremap = true, silent = true })
+vim.keymap.set('v', '<M-j>', ":m '>+1<CR>==", { noremap = true, silent = true })
+
 -- Configure window separators
 vim.opt.fillchars:append {
   horiz = '━',
@@ -221,6 +229,16 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.highlight.on_yank()
+  end,
+})
+
+local chdir = vim.api.nvim_create_augroup('chdir', {})
+
+vim.api.nvim_create_autocmd('BufEnter', {
+  group = chdir,
+  nested = true,
+  callback = function()
+    vim.go.autochdir = not vim.bo.filetype:match '^Avante'
   end,
 })
 
@@ -1452,21 +1470,21 @@ require('lazy').setup({
   -- copilot lua vim
 
   -- copilot
-  {
-    'zbirenbaum/copilot.lua',
-    lazy = false,
-    event = 'InsertEnter',
-    cmd = 'Copilot',
-    config = function()
-      require('copilot').setup {
-        suggestion = {
-          enabled = true,
-          auto_trigger = true, -- Enable auto-suggestions
-        },
-        panel = { enabled = true }, -- Enable the Copilot panel
-      }
-    end,
-  },
+  -- {
+  --   'zbirenbaum/copilot.lua',
+  --   lazy = false,
+  --   event = 'InsertEnter',
+  --   cmd = 'Copilot',
+  --   config = function()
+  --     require('copilot').setup {
+  --       suggestion = {
+  --         enabled = true,
+  --         auto_trigger = true, -- Enable auto-suggestions
+  --       },
+  --       panel = { enabled = true }, -- Enable the Copilot panel
+  --     }
+  --   end,
+  -- },
   -- end copilot vim
 
   -- avante AI
@@ -1479,10 +1497,14 @@ require('lazy').setup({
       -- add any opts here
     },
     dependencies = {
+      'nvim-treesitter/nvim-treesitter',
       'stevearc/dressing.nvim',
       'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
       --- The below dependencies are optional,
+      'echasnovski/mini.pick',
+      'nvim-telescope/telescope.nvim',
+      'ibhagwan/fzf-lua',
       'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
       'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
       'zbirenbaum/copilot.lua', -- for providers='copilot'
@@ -1515,10 +1537,21 @@ require('lazy').setup({
     config = function()
       require('avante').setup {
         ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
+        ---@alias Mode "agentic" | "legacy"
+        mode = 'agentic',
         provider = 'copilot', -- Recommend using Claude
         auto_suggestions_provider = 'copilot', -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
-        claude = {
-          model = 'claude-3-5-sonnet',
+        -- claude = {
+        --   model = 'claude-3-5-sonnet',
+        -- },
+        behaviour = {
+          auto_suggestions = false, -- Experimental stage
+          auto_set_highlight_group = true,
+          auto_set_keymaps = true,
+          auto_apply_diff_after_generation = false,
+          support_paste_from_clipboard = false,
+          minimize_diff = true, -- Whether to remove unchanged lines when applying a code block
+          enable_token_counting = true, -- Whether to enable token counting. Default to true.
         },
         mappings = {
           --- @class AvanteConflictMappings
@@ -1627,6 +1660,24 @@ require('lazy').setup({
   -- End Codeium AI Completion
 
   -- -- tab bar
+  {
+    'greggh/claude-code.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim', -- Required for git operations
+    },
+    config = function()
+      require('claude-code').setup {
+        window = {
+          position = 'botright vsplit', -- Position on right sidebar (botright = right side)
+          split_ratio = 0.3, -- Use 30% of screen width
+          enter_insert = true,
+          hide_numbers = true,
+          hide_signcolumn = true,
+        },
+      }
+      vim.keymap.set('n', '<leader>cc', '<cmd>ClaudeCode<CR>', { desc = 'Toggle Claude Code' })
+    end,
+  },
   -- lualine
   {
     'nvim-lualine/lualine.nvim',
@@ -1869,7 +1920,7 @@ require('lazy').setup({
         },
       }
 
-      vim.keymap.set('n', '<Leader>ls', require('auto-session.session-lens').search_session, {
+      vim.keymap.set('n', '<Leader>ls', '<cmd>AutoSession search<CR>', {
         noremap = true,
       })
     end,
