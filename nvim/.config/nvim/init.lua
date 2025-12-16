@@ -177,12 +177,32 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
--- Show full file path with Ctrl+g (use a different key to avoid conflict)
+-- Show full file path
+-- Keybind: <leader>fp - Show full path of current file
 vim.keymap.set('n', '<leader>fp', function()
   print(vim.fn.expand '%:p')
 end, { desc = 'Show [F]ull [P]ath of current file' })
 
+-- Tab management keymaps
+-- Keybinds:
+--   <leader>tn - Open new empty tab
+--   <leader>tc - Close current tab
+--   <leader>to - Close all other tabs
+--   <leader>th - Go to previous tab (h = left)
+--   <leader>tl - Go to next tab (l = right)
+vim.keymap.set('n', '<leader>tn', '<cmd>tabnew<cr>', { desc = '[T]ab [N]ew - Open new empty tab' })
+vim.keymap.set('n', '<leader>tc', '<cmd>tabclose<cr>', { desc = '[T]ab [C]lose - Close current tab' })
+vim.keymap.set('n', '<leader>to', '<cmd>tabonly<cr>', { desc = '[T]ab [O]nly - Close all other tabs' })
+vim.keymap.set('n', '<leader>th', '<cmd>tabprevious<cr>', { desc = '[T]ab [H] - Go to previous tab' })
+vim.keymap.set('n', '<leader>tl', '<cmd>tabnext<cr>', { desc = '[T]ab [L] - Go to next tab' })
+
 -- Neotree keymaps
+-- Keybind: <C-n> - Toggle Neo-tree sidebar
+-- When browsing files in Neo-tree:
+--   t       - Open file in new tab
+--   <CR>    - Open file in current window
+--   <C-v>   - Open file in vertical split
+--   <C-x>   - Open file in horizontal split
 vim.keymap.set('n', '<C-n>', '<cmd>Neotree toggle<cr>', { desc = 'Open Sidebar Neotree' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
