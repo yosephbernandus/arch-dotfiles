@@ -1505,6 +1505,48 @@ require('lazy').setup({
   -- vim.keymap.set('n', '<A-z>', '<Cmd>BufferScrollLeft<CR>', { desc = 'Scroll left' }),
   -- vim.keymap.set('n', '<A-m>', '<Cmd>BufferScrollRight<CR>', { desc = 'Scroll rigth' }),
 
+  -- noice.nvim - Better UI for cmdline, messages, and popupmenu
+  {
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
+    opts = {
+      cmdline = {
+        enabled = true,
+        view = 'cmdline_popup', -- Floating cmdline like in the image
+        opts = {}, -- Global options for cmdline popup
+      },
+      messages = {
+        enabled = true, -- Better message UI
+        view = 'notify', -- Use notify for messages
+      },
+      popupmenu = {
+        enabled = true, -- Better completion menu
+        backend = 'nui', -- Use nui for popupmenu
+      },
+      lsp = {
+        override = {
+          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+          ['vim.lsp.util.stylize_markdown'] = true,
+          ['cmp.entry.get_documentation'] = true,
+        },
+        progress = {
+          enabled = true, -- Show LSP progress
+        },
+      },
+      presets = {
+        bottom_search = true, -- Classic bottom search
+        command_palette = true, -- Command palette style
+        long_message_to_split = true, -- Long messages in split
+        inc_rename = false,
+        lsp_doc_border = false,
+      },
+    },
+  },
+
   -- copilot lua vim
   {
     'zbirenbaum/copilot.lua',
