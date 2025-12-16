@@ -92,6 +92,10 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Store the directory where Neovim was started
+-- Use $PWD to get the shell's directory before any plugins change it
+vim.g.initial_cwd = vim.fn.getenv('PWD') or vim.fn.getcwd()
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -160,6 +164,9 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- Session options for auto-session
+vim.opt.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -169,6 +176,11 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+-- Show full file path with Ctrl+g (use a different key to avoid conflict)
+vim.keymap.set('n', '<leader>fp', function()
+  print(vim.fn.expand '%:p')
+end, { desc = 'Show [F]ull [P]ath of current file' })
 
 -- Neotree keymaps
 vim.keymap.set('n', '<C-n>', '<cmd>Neotree toggle<cr>', { desc = 'Open Sidebar Neotree' })
@@ -586,12 +598,24 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          -- Disable searching from git root by default
+          -- This ensures searches happen in the current working directory
+          path_display = { 'truncate' },
+        },
+        pickers = {
+          find_files = {
+            hidden = false,
+            -- Prevent searching from git root
+            find_command = { 'rg', '--files', '--color=never' },
+          },
+          live_grep = {
+            -- Search only in current directory, not git root
+            additional_args = function()
+              return {}
+            end,
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -607,10 +631,20 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sf', function()
+        builtin.find_files {
+          cwd = vim.g.initial_cwd,
+          search_dirs = { vim.g.initial_cwd },
+        }
+      end, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>sg', function()
+        builtin.live_grep {
+          cwd = vim.g.initial_cwd,
+          search_dirs = { vim.g.initial_cwd },
+        }
+      end, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
@@ -866,6 +900,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'prettier', -- Used to format HTML, CSS, JS, JSON, etc
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -926,6 +961,8 @@ require('lazy').setup({
 
         c = { 'clang-format' },
         go = { 'goimports', 'gofmt' },
+        json = { 'jq' }, -- For rest-nvim JSON response formatting
+        html = { 'prettier' }, -- For rest-nvim HTML response formatting
       },
     },
   },
@@ -1170,12 +1207,13 @@ require('lazy').setup({
       dapui.setup()
 
       -- Setup Python DAP with proper path to debugpy
-      require('dap-python').setup '/home/jtp00108/.virtualenvs/debugpy/bin/python'
+      local debugpy_path = vim.fn.expand '~/.virtualenvs/debugpy/bin/python'
+      require('dap-python').setup(debugpy_path)
 
       -- Ensure Python adapter is properly configured
       dap.adapters.python = {
         type = 'executable',
-        command = '/home/jtp00108/.virtualenvs/debugpy/bin/python',
+        command = debugpy_path,
         args = { '-m', 'debugpy.adapter' },
       }
 
@@ -1187,7 +1225,7 @@ require('lazy').setup({
           name = 'Launch File',
           program = '${file}',
           pythonPath = function()
-            return '/home/jtp00108/.virtualenvs/debugpy/bin/python'
+            return debugpy_path
           end,
         },
       }
@@ -1468,23 +1506,20 @@ require('lazy').setup({
   -- vim.keymap.set('n', '<A-m>', '<Cmd>BufferScrollRight<CR>', { desc = 'Scroll rigth' }),
 
   -- copilot lua vim
-
-  -- copilot
-  -- {
-  --   'zbirenbaum/copilot.lua',
-  --   lazy = false,
-  --   event = 'InsertEnter',
-  --   cmd = 'Copilot',
-  --   config = function()
-  --     require('copilot').setup {
-  --       suggestion = {
-  --         enabled = true,
-  --         auto_trigger = true, -- Enable auto-suggestions
-  --       },
-  --       panel = { enabled = true }, -- Enable the Copilot panel
-  --     }
-  --   end,
-  -- },
+  {
+    'zbirenbaum/copilot.lua',
+    event = 'InsertEnter',
+    cmd = 'Copilot',
+    config = function()
+      require('copilot').setup {
+        suggestion = {
+          enabled = true,
+          auto_trigger = true, -- Enable auto-suggestions
+        },
+        panel = { enabled = true }, -- Enable the Copilot panel
+      }
+    end,
+  },
   -- end copilot vim
 
   -- avante AI
