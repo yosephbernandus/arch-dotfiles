@@ -1,6 +1,5 @@
 starship init fish | source
 
-fish_add_path ~/.bun/bin
 function fish_user_key_bindings
     # git shorcuts
     bind \cg 'git status'
@@ -37,13 +36,11 @@ if status is-interactive
     set -gx TERM xterm-256color
     set -gx LANG en_US.UTF-8
     set -gx LC_ALL en_US.UTF-8
-
+    
     # Path Configuration
     fish_add_path /usr/local/bin
     fish_add_path $HOME/.local/bin
     fish_add_path $HOME/.cargo/bin
-    fish_add_path $HOME/.opencode/bin
-    fish_add_path $HOME/.fzf/bin
     
     # Aliases
     alias ll='ls -la'
@@ -61,17 +58,7 @@ if status is-interactive
     alias gs='git status'
     alias gp='git push'
     alias gl='git pull'
-
-    # fzf + bat configuration
-    set -gx FZF_DEFAULT_OPTS '--height 40% --layout=reverse --border'
-    set -gx FZF_DEFAULT_COMMAND 'find .'
-    set -gx FZF_CTRL_T_OPTS "--preview '$HOME/.local/bin/bat --style=numbers --color=always --line-range :500 {}'"
-    set -gx FZF_ALT_C_OPTS "--preview 'ls -la {}'"
-
-    # Use bat as cat replacement
-    alias cat='bat'
-    alias less='bat'
-
+    
     # Prompt Configuration - using starship if installed
     if command -q starship
         starship init fish | source
@@ -80,12 +67,6 @@ if status is-interactive
     # Direnv integration if installed
     if command -q direnv
         direnv hook fish | source
-    end
-
-    # fzf key bindings integration
-    if test -f ~/.fzf/shell/key-bindings.fish
-        source ~/.fzf/shell/key-bindings.fish
-        fzf_key_bindings
     end
     
     # Simple greeting
@@ -105,4 +86,4 @@ set -x LANG en_US.UTF-8
 
 export PATH="/opt/cuda/bin:$PATH"
 export LD_LIBRARY_PATH="/opt/cuda/lib64:$LD_LIBRARY_PATH"
-
+set -gx PATH ~/.npm-global/bin $PATH
